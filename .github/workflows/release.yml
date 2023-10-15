@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+    env: 
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set current date as environment variable
+        run: echo "DATE=`date +'%Y.%m.%d'`" >>$GITHUB_ENV
+
+      - name: Building TCET Linux Welcome Tar file
+        run: |
+          cd ..
+          tar -czf tcet-linux-mirrorlist.tar.gz tcet-linux-mirrorlist/
+          touch checksum
+          sha256sum tcet-linux-mirrorlist.tar.gz > checksum
+          mv checksum tcet-linux-mirrorlist/
+          mv tcet-linux-mirrorlist.tar.gz tcet-linux-mirrorlist/
+          
+      - name: Delete Previous Latest release
+        run: |
+          gh release delete latest
+      - name: Release Tar File
+        run: |
+          gh release create ${{ env.DATE }} *tar.gz checksum --title "TCET-Linux Mirrorlist"
+      - name: Release Tar File with latest
+        run: |
+          gh release create latest *tar.gz checksum --latest --title "TCET-Linux Mirrorlist"
