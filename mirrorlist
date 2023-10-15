@@ -1,0 +1,4 @@
+Server = https://tcet-linux-repo-3.vercel.app/$arch
+Server = https://tcet-linux-repo-2.vercel.app/$arch
+Server = https://tcet-linux-repo-4.vercel.app/$arch
+Server = https://tcet-opensource.github.io/tcet-linux-repo/$arch
